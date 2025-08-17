@@ -7,30 +7,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cl.kibernum.apirest.dto.ProductoDto;
-import cl.kibernum.apirest.models.Producto;
+import cl.kibernum.apirest.entities.Producto;
 import cl.kibernum.apirest.repositories.ProductoRepository;
 import cl.kibernum.apirest.exception.ResourceNotFoundException;
 
 @Service
-public class ProductoService implements IProductoService {
+public class ProductoServiceImpl implements ICrudService<Producto, ProductoDto>, IProductoService {
     private final ProductoRepository productoRepository;
 
-    public ProductoService(ProductoRepository productoRepository) {
+    public ProductoServiceImpl(ProductoRepository productoRepository) {
         this.productoRepository = productoRepository;
     }
 
     @Override
-    public List<Producto> getAllProducts() {
+    public List<Producto> getAll() {
        return productoRepository.findAll();
     }
 
     @Override
-    public Optional<Producto> getProduct(int id) {
+    public Optional<Producto> getById(int id) {
        return productoRepository.findById(id);
+                               
     }
 
     @Override
-    public Producto createProduct(ProductoDto productoDto) {
+    public Producto create(ProductoDto productoDto) {
         Producto producto = new Producto();
 
         producto.setNombre(productoDto.getNombre());
@@ -41,9 +42,18 @@ public class ProductoService implements IProductoService {
     }
 
     @Override
-    @Transactional
-    public Producto updateProduct(int id, ProductoDto productoDto) {
+    public void softDelete(int id) {
        Producto searchingProducto = productoRepository.findById(id)
+                                    .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+      searchingProducto.desactivateProduct();
+      productoRepository.save(searchingProducto);
+    }
+
+
+    @Override
+    @Transactional
+    public Producto update(int id, ProductoDto productoDto) {
+        Producto searchingProducto = productoRepository.findById(id)
                                     .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
       
             searchingProducto.setNombre(productoDto.getNombre());
@@ -55,11 +65,7 @@ public class ProductoService implements IProductoService {
     }
 
     @Override
-    @Transactional
-    public void deleteProduct(int id) {
-       Producto searchingProducto = productoRepository.findById(id)
-                                    .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
-      
-        productoRepository.delete(searchingProducto);
+    public List<Producto> findAllByActiveTrue() {
+        return productoRepository.findAllByActiveTrue();
     }
 }

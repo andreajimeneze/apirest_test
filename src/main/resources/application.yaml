@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:librarydb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+  h2:
+    console:
+      enabled: true
+  application:
+    name: apirest
+server:
+  port: 8080
+
+security:
+  auth:
+    registration-enabled: true
+  jwt:
+    secret: ${SECURITY_JWT_SECRET:changemechangemechangemechangeme}
+    issuer: apirest
+    access-ttl: 15m
+    refresh-ttl: 7d
+    refresh-enabled: true
+    denylist-enabled: false
+  cors:
+    allowed-origins:
+      - http://localhost:3000
+# logging:
+#   level:
+#     org.hibernate.SQL: DEBUG           # Muestra SQL ejecutado
+#     org.hibernate.orm.jdbc.bind: TRACE # Muestra parámetros enlazados
+#     org.hibernate.tool.schema: DEBUG   # Mensajes del generador de esquema (DDL)
+#     org.hibernate.orm.schema: DEBUG    # Logs adicionales de schema en Hibernate 6
