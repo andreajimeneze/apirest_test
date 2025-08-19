@@ -66,7 +66,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 var payload = jwtService.parseAndValidate(token);
                 // Convierte los roles a authorities de Spring Security.
                 var authorities = payload.getRoles().stream()
-                    .map(SimpleGrantedAuthority::new)
+                        .map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
+    .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
                 // Crea el objeto Authentication y lo coloca en el contexto.
                 Authentication auth = new UsernamePasswordAuthenticationToken(payload.getSubject(), null, authorities);
@@ -92,6 +93,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) throws ServletException {
         String uri = request.getRequestURI();
-        return uri.startsWith("/api/auth/") || uri.startsWith("/h2-console");
+        return uri.startsWith("/api/v1/auth/") || uri.startsWith("/h2-console");
     }
 }

@@ -95,11 +95,15 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Endpoints públicos (login/registro/refresh y consola H2).
                 .requestMatchers("/api/v1/auth/**", "/h2-console/**").permitAll()
-                // Lecturas de libros permitidas a USER o ADMIN.
-                .requestMatchers(HttpMethod.GET, "/api/v1/productos/**").hasAnyRole("ADMIN")
+                // Lecturas permitidas a USER o ADMIN.
+                .requestMatchers(HttpMethod.GET, "/api/v1/productos/**").hasAnyRole("USER", "ADMIN")
+               
                 // Operaciones de escritura solo para ADMIN.
+                .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/v1/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/productos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/productos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/usuarios/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/productos/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
@@ -117,7 +121,7 @@ public class SecurityConfig {
             .map(ua -> User.withUsername(ua.getUsername())
                 .password(ua.getPassword())
                 .authorities(ua.getRoles().stream().map(Enum::name).toArray(String[]::new))
-                .disabled(!ua.isEnabled())
+                .disabled(!ua.isactive())
                 .build())
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }

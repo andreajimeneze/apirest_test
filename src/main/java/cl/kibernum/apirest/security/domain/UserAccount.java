@@ -29,14 +29,19 @@ public class UserAccount {
      // Nombre de usuario único y obligatorio, limitado a 100 caracteres.
     @Column(unique = true, nullable = false, length = 100)
     private String username;
-
+    @Column(nullable = false, length = 50)
+    private String nombre;
+    @Column(nullable = false, length = 100)
+    private String apellido;
+    @Column(nullable = false, length = 50, unique = true)
+    private String email;
      // Hash de la contraseña (BCrypt). Nunca guardar contraseñas en texto plano.
     @Column(nullable = false)
     private String password; // BCrypt hashed
 
      // Flag de habilitación de la cuenta (true = activa, false = deshabilitada/bloqueada).
     @Column(nullable = false)
-    private boolean enabled = true;
+    private boolean active = true;
 
      // Versión del token. Si se incrementa, invalida los refresh tokens existentes.
     @Column(nullable = false)
@@ -56,11 +61,34 @@ public class UserAccount {
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
+    public String getApellido() {
+        return apellido;
+    }
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    public boolean isEnabled() { return enabled; }
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    public boolean isactive() { return active; }
+
+    public void setEnabled(boolean active) {
+        this.active = active;
+    }
+    
+    public void desactivateUser() {
+        this.active = false;
+    }
+
+    public void activateUser() {
+        this.active = true;
+    }
 
     public int getTokenVersion() { return tokenVersion; }
     public void setTokenVersion(int tokenVersion) { this.tokenVersion = tokenVersion; }

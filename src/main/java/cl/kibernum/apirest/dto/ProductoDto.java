@@ -12,11 +12,9 @@ public class ProductoDto {
     @NotBlank
     @Size(max = 50)
     private String descripcion;
-   @NotBlank
-    @Size(max = 50)
+   @NotNull
     private int stock;
-    @NotBlank
-    @Size(max = 50)
+    @NotNull
     private double precio;
     @NotNull
     private boolean active = true;

@@ -4,14 +4,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.kibernum.apirest.dto.ProductoDto;
 import cl.kibernum.apirest.entities.Producto;
+import cl.kibernum.apirest.exception.ResourceNotFoundException;
 import cl.kibernum.apirest.services.ProductoServiceImpl;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.net.URI;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +33,9 @@ public class ProductoController {
     @PostMapping
     public ResponseEntity<Producto> createProducto(@RequestBody ProductoDto productoDto) {
         Producto createdProducto = productoService.create(productoDto);
-        return new ResponseEntity<Producto>(createdProducto, HttpStatus.CREATED);
+        URI location = URI.create(String.format("/api/v1/productos/%", createdProducto.getId()));
+       // return new ResponseEntity<Producto>(createdProducto, HttpStatus.CREATED);
+       return ResponseEntity.created(location).body(createdProducto);
     }
 
     @GetMapping
@@ -40,10 +43,19 @@ public class ProductoController {
         return ResponseEntity.ok(productoService.getAll());
     }
     
-    @GetMapping("/active")
+    @GetMapping("/activos")
     public ResponseEntity<List<Producto>> getAllProductsActive() {
         return ResponseEntity.ok(productoService.findAllByActiveTrue());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Producto> getProduct(@PathVariable int id) {
+        Producto producto = productoService.getById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+        return ResponseEntity.ok(producto);
+    
+    }
+    
 
     @PutMapping("/{id}")
     public ResponseEntity<Producto> updateProduct(@PathVariable int id, @Valid @RequestBody ProductoDto productoDto) {

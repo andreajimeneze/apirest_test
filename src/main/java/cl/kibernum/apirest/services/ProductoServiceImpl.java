@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cl.kibernum.apirest.dto.ProductoDto;
 import cl.kibernum.apirest.entities.Producto;
 import cl.kibernum.apirest.repositories.ProductoRepository;
+import cl.kibernum.apirest.exception.ResourceDuplicateException;
 import cl.kibernum.apirest.exception.ResourceNotFoundException;
 
 @Service
@@ -32,6 +33,12 @@ public class ProductoServiceImpl implements ICrudService<Producto, ProductoDto>,
 
     @Override
     public Producto create(ProductoDto productoDto) {
+        Optional<Producto> searchingProducto = productoRepository.findByNombre(productoDto.getNombre());
+
+        if(searchingProducto.isPresent()) {
+            throw new ResourceDuplicateException("No puede crear el producto porque ya existe");
+        }
+
         Producto producto = new Producto();
 
         producto.setNombre(productoDto.getNombre());

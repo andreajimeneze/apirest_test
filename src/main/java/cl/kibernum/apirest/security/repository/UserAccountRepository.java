@@ -16,5 +16,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
     
     // Método para eliminar un usuario por su nombre de usuario.
     void deleteByUsername(String username);
+
+    Optional<UserAccount> findByEmailAndActiveTrue(String email);
   
 }

@@ -1,9 +1,9 @@
-package cl.kibernum.apirest.dto;
+package cl.kibernum.apirest.security.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class UsuarioDto {
+public class UserAccountDto {
     @NotBlank
     @Size(max = 50)
     private String nombre;
@@ -14,7 +14,7 @@ public class UsuarioDto {
     @Size(max = 50)
     private String email;
 
-    public UsuarioDto(String nombre, String apellido, String email) {
+    public UserAccountDto(String nombre, String apellido, String email) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
