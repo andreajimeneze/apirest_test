@@ -78,6 +78,18 @@ public class UserAccount {
 
     public boolean isactive() { return active; }
 
+    public String getNombre() {
+        return nombre;
+    }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+    public boolean isActive() {
+        return active;
+    }
+    public void setActive(boolean active) {
+        this.active = active;
+    }
     public void setEnabled(boolean active) {
         this.active = active;
     }

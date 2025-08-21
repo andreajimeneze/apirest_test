@@ -119,9 +119,12 @@ public class AuthController {
         // USER.
         UserAccount ua = new UserAccount();
         ua.setUsername(request.getUsername());
+        ua.setNombre(request.getNombre());
+        ua.setApellido(request.getApellido());
+        ua.setEmail(request.getEmail());
         ua.setPassword(passwordEncoder.encode(request.getPassword()));
         ua.setEnabled(true);
-        ua.setRoles(Set.of(Role.ROLE_ADMIN));
+        ua.setRoles(Set.of(Role.ROLE_USER));
         userRepo.save(ua);
         return ResponseEntity.ok().build();
     }
