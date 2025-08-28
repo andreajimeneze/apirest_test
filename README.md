@@ -35,8 +35,10 @@ Dado que las rutas de autenticación se encuentran sin token: register y login, 
         UPDATE user_roles
         SET role = 'ROLE_ADMIN'
         WHERE user_id = (
-            SELECT id FROM users WHERE username = 'anabasis' <= (aquí va nombre de username del usuario registrado)
+            SELECT id FROM users WHERE username = 'anabasis' 
         ); 
+        donde username debe ser reemplazado por el nombre de usuario ingresado en el register.
+
 3) Login en Postman: Método POST en http://localhost:8081/api/v1/login
     Ingresar los datos requeridos 
         Ejemplo:
@@ -47,7 +49,6 @@ Dado que las rutas de autenticación se encuentran sin token: register y login, 
 
 4) Ingresar el token de la respuesta que genera el login a Bearer Token que se encuentra en Auth dentro de la consulta. De esta forma, se podrá acceder a rutas protegidas que en este caso son:
     - Productos: Crear productos, modificar productos, listar todos los productos, listar productos activos, ver un producto por id, y cambiar estado de activo a pasivo y viceversa
-    - Usuarios: Listar usuarios, ver un usuario particular, y cambiar estado de activo a pasivo y viceversa
 
 # Equipo 9
 Andrea Jiménez Espinoza

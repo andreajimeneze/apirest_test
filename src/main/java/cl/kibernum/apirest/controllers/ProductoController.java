@@ -1,68 +1,61 @@
 package cl.kibernum.apirest.controllers;
 
-import org.springframework.web.bind.annotation.RestController;
-
 import cl.kibernum.apirest.dto.ProductoDto;
 import cl.kibernum.apirest.entities.Producto;
 import cl.kibernum.apirest.exception.ResourceNotFoundException;
 import cl.kibernum.apirest.services.ProductoServiceImpl;
+
 import jakarta.validation.Valid;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.net.URI;
-import java.util.List;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/productos")
 public class ProductoController {
-    private ProductoServiceImpl productoService;
+
+    private final ProductoServiceImpl productoService;
 
     public ProductoController(ProductoServiceImpl productoService) {
         this.productoService = productoService;
     }
 
     @PostMapping
-    public ResponseEntity<Producto> createProducto(@RequestBody ProductoDto productoDto) {
+    public ResponseEntity<Producto> createProducto(@Valid @RequestBody ProductoDto productoDto) {
         Producto createdProducto = productoService.create(productoDto);
-        URI location = URI.create(String.format("/api/v1/productos/%", createdProducto.getId()));
-       // return new ResponseEntity<Producto>(createdProducto, HttpStatus.CREATED);
-       return ResponseEntity.created(location).body(createdProducto);
+        return new ResponseEntity<>(createdProducto, HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<List<Producto>> getAllProducts() {
         return ResponseEntity.ok(productoService.getAll());
     }
-    
+
     @GetMapping("/activos")
     public ResponseEntity<List<Producto>> getAllProductsActive() {
         return ResponseEntity.ok(productoService.findAllByActiveTrue());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Producto> getProduct(@PathVariable int id) {
+    public ResponseEntity<Producto> getProduct(@PathVariable Long id) {
         Producto producto = productoService.getById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
         return ResponseEntity.ok(producto);
-    
     }
-    
+
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> updateProduct(@PathVariable int id, @Valid @RequestBody ProductoDto productoDto) {
+    public ResponseEntity<Producto> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductoDto productoDto) {
         return ResponseEntity.ok(productoService.update(id, productoDto));
     }
 
+    // Eliminación lógica → solo ADMIN
     @PatchMapping("/{id}")
-    public void softDeleteProducto(@PathVariable int id) {
-       productoService.softDelete(id);
+    // @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> softDeleteProducto(@PathVariable Long id) {
+        productoService.softDelete(id);
+        return ResponseEntity.noContent().build();
     }
 }
+

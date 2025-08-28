@@ -22,20 +22,19 @@ public class ProductoServiceImpl implements ICrudService<Producto, ProductoDto>,
 
     @Override
     public List<Producto> getAll() {
-       return productoRepository.findAll();
+        return productoRepository.findAll();
     }
 
     @Override
-    public Optional<Producto> getById(int id) {
-       return productoRepository.findById(id);
-                               
+    public Optional<Producto> getById(Long id) {
+        return productoRepository.findById(id);
     }
 
     @Override
     public Producto create(ProductoDto productoDto) {
         Optional<Producto> searchingProducto = productoRepository.findByNombre(productoDto.getNombre());
 
-        if(searchingProducto.isPresent()) {
+        if (searchingProducto.isPresent()) {
             throw new ResourceDuplicateException("No puede crear el producto porque ya existe");
         }
 
@@ -49,25 +48,27 @@ public class ProductoServiceImpl implements ICrudService<Producto, ProductoDto>,
     }
 
     @Override
-    public void softDelete(int id) {
-       Producto searchingProducto = productoRepository.findById(id)
-                                    .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
-      searchingProducto.desactivateProduct();
-      productoRepository.save(searchingProducto);
-    }
+    public void softDelete(Long id) {
+        Producto searchingProducto = productoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
 
+        if (searchingProducto.isActive()) 
+            searchingProducto.desactivateProduct();
+    
+        productoRepository.save(searchingProducto);
+    }
 
     @Override
     @Transactional
-    public Producto update(int id, ProductoDto productoDto) {
+    public Producto update(Long id, ProductoDto productoDto) {
         Producto searchingProducto = productoRepository.findById(id)
-                                    .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
-      
-            searchingProducto.setNombre(productoDto.getNombre());
-            searchingProducto.setDescripcion(productoDto.getDescripcion());
-            searchingProducto.setStock(productoDto.getStock());
-            searchingProducto.setPrecio(productoDto.getPrecio());
-        
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+
+        searchingProducto.setNombre(productoDto.getNombre());
+        searchingProducto.setDescripcion(productoDto.getDescripcion());
+        searchingProducto.setStock(productoDto.getStock());
+        searchingProducto.setPrecio(productoDto.getPrecio());
+
         return productoRepository.save(searchingProducto);
     }
 

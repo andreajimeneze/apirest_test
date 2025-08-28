@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     @Column(unique = true, nullable = false, length = 50)
     private String nombre;
     @Column(nullable = false, length = 200)
@@ -34,7 +34,7 @@ public class Producto {
 
     public Producto() { }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -72,6 +72,10 @@ public class Producto {
     
     public boolean isActive() {
         return active;
+    }
+
+     public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void desactivateProduct() {

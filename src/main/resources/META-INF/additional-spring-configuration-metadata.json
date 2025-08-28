@@ -1,0 +1,41 @@
+{"properties": [
+  {
+    "name": "security.auth.registration-enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'security.auth.registration-enabled'"
+  },
+  {
+    "name": "security.jwt.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'security.jwt.secret'"
+  },
+  {
+    "name": "security.jwt.refresh-ttl",
+    "type": "java.lang.String",
+    "description": "A description for 'security.jwt.refresh-ttl'"
+  },
+  {
+    "name": "security.jwt.issuer",
+    "type": "java.lang.String",
+    "description": "A description for 'security.jwt.issuer'"
+  },
+  {
+    "name": "security.jwt.access-ttl",
+    "type": "java.lang.String",
+    "description": "A description for 'security.jwt.access-ttl'"
+  },
+  {
+    "name": "security.cors.allowed-origins",
+    "type": "java.lang.String",
+    "description": "A description for 'security.cors.allowed-origins'"
+  },
+  { "name": "security.jwt.denylist-enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'security.jwt.denylist-enabled'"
+  },
+  { 
+   "name": "security.jwt.refresh-enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'security.jwt.refresh-enabled'"
+  }
+]}

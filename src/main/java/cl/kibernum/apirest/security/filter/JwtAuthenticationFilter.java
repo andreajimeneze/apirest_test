@@ -25,12 +25,16 @@ import cl.kibernum.apirest.security.jwt.JwtService;
  *
  * Flujo:
  * - Intercepta cada request (OncePerRequestFilter).
- * - Si el header Authorization comienza con "Bearer ", intenta validar el token.
- * - Si es válido, extrae el usuario y roles, y los coloca en el SecurityContext.
- * - Si es inválido, responde 401 Unauthorized en JSON y detiene la cadena de filtros.
+ * - Si el header Authorization comienza con "Bearer ", intenta validar el
+ * token.
+ * - Si es válido, extrae el usuario y roles, y los coloca en el
+ * SecurityContext.
+ * - Si es inválido, responde 401 Unauthorized en JSON y detiene la cadena de
+ * filtros.
  * - Si no hay token, deja pasar la request (puede ser endpoint público).
  *
- * Nota: Este filtro se inserta antes del UsernamePasswordAuthenticationFilter en la cadena de Spring Security.
+ * Nota: Este filtro se inserta antes del UsernamePasswordAuthenticationFilter
+ * en la cadena de Spring Security.
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -50,13 +54,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * - Si es inválido, responde 401 y detiene la cadena.
      * - Si no hay token, deja pasar la request.
      *
-     * @param request petición HTTP entrante
-     * @param response respuesta HTTP saliente
+     * @param request     petición HTTP entrante
+     * @param response    respuesta HTTP saliente
      * @param filterChain cadena de filtros de Spring Security
      */
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
-        throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain)
+            throws ServletException, IOException {
         // Extrae el header Authorization.
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header != null && header.startsWith("Bearer ")) {
@@ -67,13 +72,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // Convierte los roles a authorities de Spring Security.
                 var authorities = payload.getRoles().stream()
                         .map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
-    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
                 // Crea el objeto Authentication y lo coloca en el contexto.
                 Authentication auth = new UsernamePasswordAuthenticationToken(payload.getSubject(), null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception ex) {
-                // Si el token es inválido, responde 401 Unauthorized en JSON y detiene la cadena.
+                // Si el token es inválido, responde 401 Unauthorized en JSON y detiene la
+                // cadena.
                 response.resetBuffer();
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
@@ -87,8 +93,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Evita aplicar el filtro a endpoints públicos como /api/auth/** o la consola H2.
-     * Esto previene que un Authorization inválido cause 401 en rutas públicas (por ejemplo, /api/auth/login).
+     * Evita aplicar el filtro a endpoints públicos como /api/auth/** o la consola
+     * H2.
+     * Esto previene que un Authorization inválido cause 401 en rutas públicas (por
+     * ejemplo, /api/auth/login).
      */
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) throws ServletException {

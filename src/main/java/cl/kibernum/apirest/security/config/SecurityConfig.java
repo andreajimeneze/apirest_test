@@ -52,7 +52,7 @@ public class SecurityConfig {
     // EntryPoint/AccessDeniedHandler personalizados para 401 y 403.
     private final SecurityExceptionHandler securityExceptionHandler;
 
-    // Inyección por constructor de dependencias necesarias para la configuración.
+   // Inyección por constructor de dependencias necesarias para la configuración.
     public SecurityConfig(JwtAuthenticationFilter jwtFilter, JwtProperties props, SecurityExceptionHandler securityExceptionHandler) {
         this.jwtFilter = jwtFilter;
         this.props = props;
@@ -99,11 +99,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/productos/**").hasAnyRole("USER", "ADMIN")
                
                 // Operaciones de escritura solo para ADMIN.
-                .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/v1/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PATCH, "/api/v1/productos/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PATCH, "/api/v1/usuarios/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/productos/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
@@ -121,7 +119,7 @@ public class SecurityConfig {
             .map(ua -> User.withUsername(ua.getUsername())
                 .password(ua.getPassword())
                 .authorities(ua.getRoles().stream().map(Enum::name).toArray(String[]::new))
-                .disabled(!ua.isactive())
+                .disabled(!ua.isActive())
                 .build())
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }

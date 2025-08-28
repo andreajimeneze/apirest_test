@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import cl.kibernum.apirest.entities.Producto;
 
 @Repository
-public interface ProductoRepository extends JpaRepository<Producto, Integer> {
+public interface ProductoRepository extends JpaRepository<Producto, Long> {
     List<Producto> findAllByActiveTrue();  
     Optional<Producto> findByNombre(String nombre);
 } 

@@ -27,7 +27,6 @@ public class RegisterRequest {
         this.username = username;
     }
 
-
     public String getNombre() {
         return nombre;
     }
