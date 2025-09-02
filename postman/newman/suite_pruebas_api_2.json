@@ -1,0 +1,520 @@
+{
+	"info": {
+		"_postman_id": "a16023ac-20bc-4000-b554-f92559900105",
+		"name": "Suite de Pruebas Demo API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31525101"
+	},
+	"item": [
+		{
+			"name": "Registrar usuario",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Registro exitoso\", function () {\r",
+							"    pm.response.to.have.status(201); // o 204 si es void\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"anabasis\",\r\n    \"nombre\": \"Andrea\",\r\n    \"apellido\": \"Jiménez\",\r\n    \"email\": \"andreacjimenez@gmail.com\",\r\n    \"password\": \"condor\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_base}}{{base_register}}",
+					"host": [
+						"{{url_base}}{{base_register}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login usuario",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Usuario logueado correctamente, status 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    \r",
+							"let jsonData = pm.response.json();\r",
+							"if (jsonData.accessToken) {\r",
+							"    pm.environment.set(\"accessToken\", jsonData.accessToken);\r",
+							"    console.log(\"Token guardado en entorno:\", jsonData.accessToken);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"anabasis\",\r\n    \"password\": \"condor\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_base}}{{base_login}}",
+					"host": [
+						"{{url_base}}{{base_login}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET listado productos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var template = `\r",
+							"<canvas id=\"myChart\" height=\"75\"></canvas>\r",
+							"\r",
+							"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js\"></script> \r",
+							"\r",
+							"<script>\r",
+							"    var ctx = document.getElementById(\"myChart\");\r",
+							"\r",
+							"    var myChart = new Chart(ctx, {\r",
+							"        type: \"bar\",\r",
+							"        data: {\r",
+							"            labels: [\"Error Code\"],\r",
+							"            datasets: [{\r",
+							"                data: [{{response.code}}],\r",
+							"                \r",
+							"                // Change these colours to customize the chart\r",
+							"                backgroundColor: [\"#003f5c\"],\r",
+							"            }]\r",
+							"        },\r",
+							"        options: {\r",
+							"            legend: { display: false },\r",
+							"            title: {\r",
+							"                display: true,\r",
+							"                text: 'Error Visualization'\r",
+							"            },\r",
+							"            scales: {\r",
+							"                xAxes: [{\r",
+							"                    display: true,\r",
+							"                    scaleLabel: {\r",
+							"                        display: true,\r",
+							"                        labelString: 'Items'\r",
+							"                    }\r",
+							"                }],\r",
+							"                yAxes: [{\r",
+							"                    display: true,\r",
+							"                    scaleLabel: {\r",
+							"                        display: true,\r",
+							"                        labelString: 'Count'\r",
+							"                    }\r",
+							"                }]\r",
+							"            }\r",
+							"        }\r",
+							"\r",
+							"    });\r",
+							"\r",
+							"    // Access the data passed to pm.visualizer.set() from the JavaScript\r",
+							"    // code of the Visualizer template\r",
+							"    pm.getData(function (err, value) {\r",
+							"        myChart.data.datasets[0].data = [value.response.code];\r",
+							"        myChart.update();\r",
+							"    });\r",
+							"\r",
+							"</script>`;\r",
+							"\r",
+							"function constructVisualizerPayload() {\r",
+							"    var res = pm.response.json();\r",
+							"    \r",
+							"    var visualizerData = {\r",
+							"        code: res.code\r",
+							"    };\r",
+							"\r",
+							"    return {response: visualizerData};\r",
+							"}\r",
+							"\r",
+							"pm.visualizer.set(template, constructVisualizerPayload());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url_base}}{{products_base}}",
+					"host": [
+						"{{url_base}}{{products_base}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST crear producto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json();\r",
+							"\r",
+							"if(res && res.id) pm.environment.set('id_product', res.id);\r",
+							"\r",
+							"// Se testea el código 201\r",
+							"pm.test('201 Created', () => pm.response.to.have.status(201));\r",
+							"pm.test('El ID del producto se setea en variable de entorno', () => pm.expect(pm.environment.get('id_product')).to.not.be.undefined);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"dfds  XVCVf\",\r\n    \"descripcion\": \"EPSON\",\r\n    \"stock\": 20,\r\n    \"precio\": 500000,\r\n    \"active\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_base}}{{products_base}}",
+					"host": [
+						"{{url_base}}{{products_base}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+  "name": "PUT modificar producto",
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          "// Test de status 200",
+          "pm.test('200 OK', () => pm.response.to.have.status(200));",
+
+          "// Test de que los campos fueron actualizados correctamente",
+          "pm.test('Campos actualizados correctamente', () => {",
+          "    const res = pm.response.json();",
+          "    const reqBody = JSON.parse(pm.request.body.raw);",
+
+          "    pm.expect(res.nombre).to.eql(reqBody.nombre);",
+          "    pm.expect(res.descripcion).to.eql(reqBody.descripcion);",
+          "    pm.expect(res.precio).to.eql(reqBody.precio);",
+          "    pm.expect(res.stock).to.eql(reqBody.stock);",
+          "    pm.expect(res.active).to.eql(reqBody.active);",
+          "});"
+        ],
+        "type": "text/javascript",
+        "packages": {}
+      }
+    }
+  ],
+  "request": {
+    "method": "PUT",
+    "header": [
+      {
+        "key": "Authorization",
+        "value": "Bearer {{accessToken}}",
+        "type": "text"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json",
+        "type": "text"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "raw": "{\n    \"nombre\": \"Computador\",\n    \"descripcion\": \"EPSON\",\n    \"stock\": 25,\n    \"precio\": 500000,\n    \"active\": true\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    },
+    "url": {
+      "raw": "{{url_base}}{{products_base}}/{{id_product}}",
+      "host": [
+        "{{url_base}}{{products_base}}"
+      ],
+      "path": [
+        "{{id_product}}"
+      ]
+    }
+  },
+  "response": []
+}
+,
+		{
+			"name": "Soft delete producto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('202 aceptado', () => pm.response.to.have.status(202));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"active\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_base}}{{products_base}}/{{id_product}}",
+					"host": [
+						"{{url_base}}{{products_base}}"
+					],
+					"path": [
+						"{{id_product}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ver producto por id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('200 OK', () => pm.response.to.have.status(200));\r",
+							"\r",
+							"pm.test('Producto corresponde al ID', () => {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const idProduct = Number(pm.environment.get('id_product'));\r",
+							"    pm.expect(jsonData.id).to.equal(idProduct);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url_base}}{{products_base}}/{{id_product}}",
+					"host": [
+						"{{url_base}}{{products_base}}"
+					],
+					"path": [
+						"{{id_product}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET listado productos ACTIVOS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('200 OK', () => pm.response.to.have.status(200));\r",
+							"\r",
+							"pm.test(`Número de productos activos: ${pm.response.json().length}`, () => {\r",
+							"    const res = pm.response.json();\r",
+							"    pm.expect(res).to.be.an('array'); // Asegura que sea un array\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url_base}}{{products_base}}/activos",
+					"host": [
+						"{{url_base}}{{products_base}}"
+					],
+					"path": [
+						"activos"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.collectionVariables.set('correlation_id', pm.variables.replaceIn('{{$randomUUID}}'));\r",
+					"pm.collectionVariables.set('timestamp_iso', new Date().toISOString());\r",
+					"\r",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "products_base",
+			"value": "/v1/productos"
+		},
+		{
+			"key": "correlation_id",
+			"value": ""
+		},
+		{
+			"key": "timestamp_iso",
+			"value": ""
+		},
+		{
+			"key": "accept",
+			"value": "application/json"
+		},
+		{
+			"key": "content_type",
+			"value": "application/json"
+		},
+		{
+			"key": "base_register",
+			"value": "/v1/auth/register",
+			"type": "default"
+		},
+		{
+			"key": "base_login",
+			"value": "/v1/auth/login",
+			"type": "default"
+		}
+	]
+}

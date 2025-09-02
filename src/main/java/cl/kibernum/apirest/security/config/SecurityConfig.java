@@ -99,10 +99,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/productos/**").hasAnyRole("USER", "ADMIN")
                
                 // Operaciones de escritura solo para ADMIN.
-                .requestMatchers(HttpMethod.POST, "/api/v1/productos/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/v1/productos/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PATCH, "/api/v1/productos/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/productos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/v1/productos/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/productos/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/productos/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/productos/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

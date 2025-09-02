@@ -50,12 +50,10 @@ public class ProductoController {
         return ResponseEntity.ok(productoService.update(id, productoDto));
     }
 
-    // Eliminación lógica → solo ADMIN
     @PatchMapping("/{id}")
-    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> softDeleteProducto(@PathVariable Long id) {
         productoService.softDelete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.accepted().build();
     }
 }
 

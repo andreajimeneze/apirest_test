@@ -17,6 +17,8 @@ import cl.kibernum.apirest.security.jwt.JwtService;
 // Repositorio para persistencia de usuarios.
 import cl.kibernum.apirest.security.repository.UserAccountRepository;
 import jakarta.validation.Valid;
+
+import java.net.URI;
 import java.util.Set;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  * Controlador apirest de autenticación y gestión de tokens.
@@ -126,7 +129,14 @@ public class AuthController {
         ua.setEnabled(true);
         ua.setRoles(Set.of(Role.ROLE_USER));
         userRepo.save(ua);
-        return ResponseEntity.ok().build();
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(ua.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     /**
