@@ -1,92 +1,11 @@
 {
 	"info": {
-		"_postman_id": "a16023ac-20bc-4000-b554-f92559900105",
-		"name": "Suite de Pruebas Demo API",
+		"_postman_id": "38912aac-0876-4691-a6c9-134402739a8a",
+		"name": "ApirestModular6",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "31525101"
 	},
 	"item": [
-		{
-			"name": "Registrar usuario",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Registro exitoso\", function () {\r",
-							"    pm.response.to.have.status(201); // o 204 si es void\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"anabasis\",\r\n    \"nombre\": \"Andrea\",\r\n    \"apellido\": \"Jiménez\",\r\n    \"email\": \"andreacjimenez@gmail.com\",\r\n    \"password\": \"condor\"\r\n\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url_base}}{{base_register}}",
-					"host": [
-						"{{url_base}}{{base_register}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Login usuario",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Usuario logueado correctamente, status 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"    });\r",
-							"    \r",
-							"let jsonData = pm.response.json();\r",
-							"if (jsonData.accessToken) {\r",
-							"    pm.environment.set(\"accessToken\", jsonData.accessToken);\r",
-							"    console.log(\"Token guardado en entorno:\", jsonData.accessToken);\r",
-							"}"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"anabasis\",\r\n    \"password\": \"condor\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url_base}}{{base_login}}",
-					"host": [
-						"{{url_base}}{{base_login}}"
-					]
-				}
-			},
-			"response": []
-		},
 		{
 			"name": "GET listado productos",
 			"event": [
@@ -167,14 +86,7 @@
 			],
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "GET",
 				"header": [],
@@ -212,14 +124,7 @@
 			],
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "POST",
 				"header": [],
@@ -242,68 +147,55 @@
 			"response": []
 		},
 		{
-  "name": "PUT modificar producto",
-  "event": [
-    {
-      "listen": "test",
-      "script": {
-        "exec": [
-          "// Test de status 200",
-          "pm.test('200 OK', () => pm.response.to.have.status(200));",
-
-          "// Test de que los campos fueron actualizados correctamente",
-          "pm.test('Campos actualizados correctamente', () => {",
-          "    const res = pm.response.json();",
-          "    const reqBody = JSON.parse(pm.request.body.raw);",
-
-          "    pm.expect(res.nombre).to.eql(reqBody.nombre);",
-          "    pm.expect(res.descripcion).to.eql(reqBody.descripcion);",
-          "    pm.expect(res.precio).to.eql(reqBody.precio);",
-          "    pm.expect(res.stock).to.eql(reqBody.stock);",
-          "    pm.expect(res.active).to.eql(reqBody.active);",
-          "});"
-        ],
-        "type": "text/javascript",
-        "packages": {}
-      }
-    }
-  ],
-  "request": {
-    "method": "PUT",
-    "header": [
-      {
-        "key": "Authorization",
-        "value": "Bearer {{accessToken}}",
-        "type": "text"
-      },
-      {
-        "key": "Content-Type",
-        "value": "application/json",
-        "type": "text"
-      }
-    ],
-    "body": {
-      "mode": "raw",
-      "raw": "{\n    \"nombre\": \"Computador\",\n    \"descripcion\": \"EPSON\",\n    \"stock\": 25,\n    \"precio\": 500000,\n    \"active\": true\n}",
-      "options": {
-        "raw": {
-          "language": "json"
-        }
-      }
-    },
-    "url": {
-      "raw": "{{url_base}}{{products_base}}/{{id_product}}",
-      "host": [
-        "{{url_base}}{{products_base}}"
-      ],
-      "path": [
-        "{{id_product}}"
-      ]
-    }
-  },
-  "response": []
-}
-,
+			"name": "PUT modificar producto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('200 OK', () => pm.response.to.have.status(200));\r",
+							"pm.test('Producto actualizado', () => {\r",
+							"    const res = pm.response.json();\r",
+							"    pm.expect(res.nombre).to.eql('Lavadora');\r",
+							"});\r",
+							"\r",
+							"pm.test('Stock actualizado correctamente', () => {\r",
+							"    const res = pm.response.json();\r",
+							"    pm.expect(res.stock).to.eq(20);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"Lavadora\",\r\n    \"descripcion\": \"SAMSUNG\",\r\n    \"stock\": 20,\r\n    \"precio\": 500000,\r\n    \"active\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_base}}{{products_base}}/{{id_product}}",
+					"host": [
+						"{{url_base}}{{products_base}}"
+					],
+					"path": [
+						"{{id_product}}"
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "Soft delete producto",
 			"event": [
@@ -320,14 +212,7 @@
 			],
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "PATCH",
 				"header": [],
@@ -374,14 +259,7 @@
 			],
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "GET",
 				"header": [],
@@ -419,14 +297,7 @@
 			],
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "GET",
 				"header": [
@@ -448,73 +319,6 @@
 				}
 			},
 			"response": []
-		}
-	],
-	"auth": {
-		"type": "bearer",
-		"bearer": [
-			{
-				"key": "token",
-				"value": "{{accessToken}}",
-				"type": "string"
-			}
-		]
-	},
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					"pm.collectionVariables.set('correlation_id', pm.variables.replaceIn('{{$randomUUID}}'));\r",
-					"pm.collectionVariables.set('timestamp_iso', new Date().toISOString());\r",
-					"\r",
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "products_base",
-			"value": "/v1/productos"
-		},
-		{
-			"key": "correlation_id",
-			"value": ""
-		},
-		{
-			"key": "timestamp_iso",
-			"value": ""
-		},
-		{
-			"key": "accept",
-			"value": "application/json"
-		},
-		{
-			"key": "content_type",
-			"value": "application/json"
-		},
-		{
-			"key": "base_register",
-			"value": "/v1/auth/register",
-			"type": "default"
-		},
-		{
-			"key": "base_login",
-			"value": "/v1/auth/login",
-			"type": "default"
 		}
 	]
 }

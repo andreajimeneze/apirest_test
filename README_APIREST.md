@@ -1,5 +1,5 @@
 
-API REST Segura para Gestión de Productos y Usuarios
+API REST Segura para Gestión de Productos 
 
 # Requerimientos mínimos
 Para este proyecto, se utilizó Java 21 y SpringBoot. 
@@ -10,9 +10,8 @@ Las dependencias instaladas en 'pom.xml' son:
 - assertj
 - mockito
 - hamcrest
-- spring security
 - nimbusds
-- spring security test
+
 
 
 # Equipo 9
